@@ -1,0 +1,8 @@
+{
+    "azure.account" : "account_name",
+    "azure.key" : "account_key",
+    "azure.table" : "gauges",
+
+    "twitter.consumer_key": "XXXX",
+    "twitter.consumer_secret": "XXXX"
+}
