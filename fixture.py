@@ -58,4 +58,5 @@ tasks = [
 #     (fb.friends_count, ('*/2',)),
 #     (runkeeper.activities_and_calories, ('*',)),
 #     (runkeeper.sleeps, ('*',))
+#     (runkeeper.weight, ('*/12',))
 # ]

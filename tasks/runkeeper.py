@@ -47,3 +47,27 @@ def sleeps(gauge_factory, config, logger):
     gauge.save(today_utc, total_sleep_mins)
     logger.info('Saved {0} min. sleep for {1}'.format(total_sleep_mins,
                                                       today_utc))
+
+
+@requires('runkeeper.access_token')
+def weight(gauge_factory, config, logger):
+    """Saves last known weight (if any) for today
+    """
+    
+    gauge = gauge_factory('runkeeper.weight')
+
+    user = healthgraph.User(session=healthgraph.
+                            Session(config['runkeeper.access_token']))
+
+    weights = list(user.get_weight_measurement_iter())
+    #TODO code above loads all weight measurements, inefficient
+
+    # since items are loaded in descending order, first result is latest weight
+    if weights:
+        today_utc = datetime.datetime.now(tzutc()).date()
+        last_known_weight = weights[0]['weight']
+        gauge.save(today_utc, last_known_weight)
+        logger.info('Saved {0} kg weight for {1}'.format(last_known_weight,
+                                                         today_utc))
+    else:
+        logger.warning('Runkeeper account has no weight measurement data.')
