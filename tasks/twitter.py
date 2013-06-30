@@ -1,8 +1,6 @@
 # coding: utf-8
 
-from . import requires
-import datetime
-from dateutil.tz import tzutc
+from . import requires, today_utc
 import tweepy
 
 
@@ -12,10 +10,6 @@ def twitter_api_handle(config):
     auth.set_access_token(config['twitter.access_token'],
                           config['twitter.access_secret'])
     return tweepy.API(auth)
-
-
-def today_utc():
-    return datetime.datetime.now(tzutc()).date()
 
 
 @requires('twitter.consumer_key', 'twitter.consumer_secret',

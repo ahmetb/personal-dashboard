@@ -1,8 +1,6 @@
 # coding: utf-8
 
-from . import requires
-import datetime
-from dateutil.tz import tzutc
+from . import requires, today_utc
 import healthgraph
 
 
@@ -18,16 +16,15 @@ def activities_and_calories(gauge_factory, config, logger):
     #TODO code above loads all fitness activities, inefficient
 
     #TODO runkeeper returns start_time in local time, convert to UTC
-    today_utc = datetime.datetime.now(tzutc()).date()
-    today_data = filter(lambda a: a['start_time'].date() == today_utc,
+    today_data = filter(lambda a: a['start_time'].date() == today_utc(),
                         activities)
     total_activities = len(today_data)
     total_calories = int(sum([a['total_calories'] for a in today_data]))
 
-    activity_gauge.save(today_utc, total_activities)
-    calorie_gauge.save(today_utc, total_calories)
+    activity_gauge.save(today_utc(), total_activities)
+    calorie_gauge.save(today_utc(), total_calories)
     logger.info('Saved {0} activities ({1} cal) for {2}'
-                .format(total_activities, total_calories, today_utc))
+                .format(total_activities, total_calories, today_utc()))
 
 
 @requires('runkeeper.access_token')
@@ -40,13 +37,12 @@ def sleeps(gauge_factory, config, logger):
     sleeps = list(user.get_sleep_measurement_iter())
     #TODO code above loads all sleep measurements, inefficient
 
-    today_utc = datetime.datetime.now(tzutc()).date()
-    today_sleeps = filter(lambda s: s['timestamp'].date() == today_utc, sleeps)
+    today_sleeps = filter(lambda s: s['timestamp'].date() == today_utc(), sleeps)
     total_sleep_mins = sum([a['total_sleep'] for a in today_sleeps])
 
-    gauge.save(today_utc, total_sleep_mins)
+    gauge.save(today_utc(), total_sleep_mins)
     logger.info('Saved {0} min. sleep for {1}'.format(total_sleep_mins,
-                                                      today_utc))
+                                                      today_utc()))
 
 
 @requires('runkeeper.access_token')
@@ -64,10 +60,9 @@ def weight(gauge_factory, config, logger):
 
     # since items are loaded in descending order, first result is latest weight
     if weights:
-        today_utc = datetime.datetime.now(tzutc()).date()
         last_known_weight = weights[0]['weight']
-        gauge.save(today_utc, last_known_weight)
+        gauge.save(today_utc(), last_known_weight)
         logger.info('Saved {0} kg weight for {1}'.format(last_known_weight,
-                                                         today_utc))
+                                                         today_utc()))
     else:
         logger.warning('Runkeeper account has no weight measurement data.')

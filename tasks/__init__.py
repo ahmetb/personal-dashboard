@@ -1,6 +1,8 @@
 # coding: utf-8
 
 import logging
+import datetime
+from dateutil.tz import tzutc
 
 
 _simplegauges_factory = None
@@ -42,3 +44,13 @@ class requires(object):
             return func(_simplegauges_factory, config, logger)
         decorator.__name__ = func.__name__
         return decorator
+
+
+def today_utc():
+    return datetime.datetime.now(tzutc()).date()
+
+
+def epoch_for_day(day):
+    day_time = datetime.datetime.combine(day, datetime.time(tzinfo=tzutc()))
+    epoch = datetime.datetime(1970, 1, 1, tzinfo=tzutc())
+    return int((day_time - epoch).total_seconds())

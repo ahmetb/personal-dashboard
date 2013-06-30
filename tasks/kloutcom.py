@@ -1,8 +1,6 @@
 # coding: utf-8
 
-from . import requires
-import datetime
-from dateutil.tz import tzutc
+from . import requires, today_utc 
 import klout
 
 
@@ -16,8 +14,6 @@ def score(gauge_factory, config, logger):
     if not kloutId:
         raise Exception("Klout id not found for screen name {0}".format(user))
     score = k.user.score(kloutId=kloutId).get('score')
-
-    today_utc = datetime.datetime.now(tzutc()).date()
-    gauge.save(today_utc, score)
-
+    gauge.save(today_utc(), score)
+    
     logger.info('Saved Klout score: {0}'.format(score))

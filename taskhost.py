@@ -5,6 +5,7 @@ import sys
 import time
 import json
 import logging
+import datetime
 from apscheduler.scheduler import Scheduler
 import simplegauges
 import tasks
@@ -55,6 +56,7 @@ def main():
             logger.error(e)
             raise e
 
+    logger.info('All tasks ran successfully once. Starting scheduler...')
     # at this point all tasks ran once successfully
     sched = Scheduler()
 
@@ -64,6 +66,13 @@ def main():
         sched.add_cron_job(task[0], **cron_kwargs)
 
     sched.start()
+    logger.info('Scheduler started with {0} jobs.'
+                .format(len(sched.get_jobs())))
+    now = datetime.datetime.now()
+    for j in sched.get_jobs():
+        logger.debug('Scheduled: {0}.{1}, next run:{2}'
+                     .format(j.func.__module__,j.func.__name__,
+                             j.compute_next_run_time(now)))
 
     # deamonize the process
     while True:
