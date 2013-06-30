@@ -37,7 +37,8 @@ def sleeps(gauge_factory, config, logger):
     sleeps = list(user.get_sleep_measurement_iter())
     #TODO code above loads all sleep measurements, inefficient
 
-    today_sleeps = filter(lambda s: s['timestamp'].date() == today_utc(), sleeps)
+    today_sleeps = filter(lambda s: s['timestamp'].date() == today_utc(),
+                          sleeps)
     total_sleep_mins = sum([a['total_sleep'] for a in today_sleeps])
 
     gauge.save(today_utc(), total_sleep_mins)
@@ -49,7 +50,7 @@ def sleeps(gauge_factory, config, logger):
 def weight(gauge_factory, config, logger):
     """Saves last known weight (if any) for today
     """
-    
+
     gauge = gauge_factory('runkeeper.weight')
 
     user = healthgraph.User(session=healthgraph.

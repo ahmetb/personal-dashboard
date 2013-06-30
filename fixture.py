@@ -1,13 +1,11 @@
 # coding: utf-8
 
-from tasks import twitter
-from tasks import kloutcom
-from tasks import foursq
-from tasks import fb
-from tasks import runkeeper
 
 """
 Example configuration for statistics retrieval tasks:
+
+from tasks import twitter
+from tasks import foursq
 
 tasks = [
     (twitter.followers_count, ('*','10')),
@@ -44,11 +42,19 @@ A single task looks like:
                 NOTE: If you are going to use only hour part, do not forget
                 comma at the end, e.g: ('*',)
 """
+
 tasks = [
 ]
 
 # Sample configuration:
 #     Note that the last task does not have a comma at the end of the line
+#
+# from tasks import twitter
+# from tasks import kloutcom
+# from tasks import foursq
+# from tasks import fb
+# from tasks import runkeeper
+# from tasks import atelog
 #
 # tasks = [
 #     (twitter.followers_count, ('*', '*/15')),
@@ -57,6 +63,7 @@ tasks = [
 #     (foursq.checkins, ('*', '59')),
 #     (fb.friends_count, ('*/2',)),
 #     (runkeeper.activities_and_calories, ('*',)),
-#     (runkeeper.sleeps, ('*',))
-#     (runkeeper.weight, ('*/12',))
+#     (runkeeper.sleeps, ('*',)),
+#     (runkeeper.weight, ('*/12',)),
+#     (atelog.coffees, ('*/6',))
 # ]

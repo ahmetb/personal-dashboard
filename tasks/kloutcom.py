@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from . import requires, today_utc 
+from . import requires, today_utc
 import klout
 
 
@@ -15,5 +15,5 @@ def score(gauge_factory, config, logger):
         raise Exception("Klout id not found for screen name {0}".format(user))
     score = k.user.score(kloutId=kloutId).get('score')
     gauge.save(today_utc(), score)
-    
+
     logger.info('Saved Klout score: {0}'.format(score))
