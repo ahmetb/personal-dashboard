@@ -71,7 +71,7 @@ def main():
     now = datetime.datetime.now()
     for j in sched.get_jobs():
         logger.debug('Scheduled: {0}.{1}, next run:{2}'
-                     .format(j.func.__module__,j.func.__name__,
+                     .format(j.func.__module__, j.func.__name__,
                              j.compute_next_run_time(now)))
 
     # deamonize the process
