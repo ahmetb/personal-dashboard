@@ -42,7 +42,7 @@ def generate_and_upload(gauge_factory, config, logger):
                                                        interpolators.linear]),
         ('runkeeper.calories', runkeeper_calories, 70, weekly_sum,
             [zero_fill_weekly]),
-        ('runkeeper.activities', runkeeper_activities, 17, weekly_sum,
+        ('runkeeper.activities', runkeeper_activities, 70, weekly_sum,
             [zero_fill_weekly]),
         ('runkeeper.weight', runkeeper_weight, 60, weekly_min,
             [zero_fill_weekly, interpolators.linear]),
