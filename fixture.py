@@ -47,7 +47,8 @@ tasks = [
 ]
 
 # Sample configuration:
-#     Note that the last task does not have a comma at the end of the line
+#     You can just uncomment the part below.
+#     Note that the last task does not have a comma at the end of the line.
 #
 # from tasks import twitter
 # from tasks import kloutcom
@@ -55,16 +56,19 @@ tasks = [
 # from tasks import fb
 # from tasks import runkeeper
 # from tasks import atelog
-# 
+# from tasks import reporting
+#
+#
 # tasks = [
-#     (twitter.followers_count, ('*', '*/15')),
-#     (twitter.tweets_count, ('*', '*/15')),
+#     (twitter.followers_count, ('*', '59')),
+#     (twitter.tweets_count, ('*', '59')),
 #     (foursq.checkins, ('*', '59')),
 #     (foursq.checkins, ('*', '59')),
 #     (fb.friends_count, ('*/2',)),
-#     (runkeeper.activities_and_calories, ('*',)),
+#     (runkeeper.activities_and_calories, ('*', '59')),
 #     (runkeeper.sleeps, ('*',)),
 #     (runkeeper.weight, ('*/12',)),
-#     (kloutcom.score, ('*/6',)),
-#     (atelog.coffees, ('*/6',))
+#     (kloutcom.score, ('*/12',)),
+#     (atelog.coffees, ('*',)),
+#     (reporting.generate_and_upload, ('*', '*/20'))
 # ]

@@ -46,8 +46,12 @@ class requires(object):
         return decorator
 
 
+def utc_now():
+    return datetime.datetime.now(tzutc())
+
+
 def today_utc():
-    return datetime.datetime.now(tzutc()).date()
+    return utc_now().date()
 
 
 def epoch_for_day(day):
