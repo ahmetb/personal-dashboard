@@ -55,7 +55,7 @@ tasks = [
 # from tasks import fb
 # from tasks import runkeeper
 # from tasks import atelog
-#
+# 
 # tasks = [
 #     (twitter.followers_count, ('*', '*/15')),
 #     (twitter.tweets_count, ('*', '*/15')),
@@ -65,5 +65,6 @@ tasks = [
 #     (runkeeper.activities_and_calories, ('*',)),
 #     (runkeeper.sleeps, ('*',)),
 #     (runkeeper.weight, ('*/12',)),
+#     (kloutcom.score, ('*/6',)),
 #     (atelog.coffees, ('*/6',))
 # ]
