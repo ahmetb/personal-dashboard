@@ -8,6 +8,8 @@ import json
 from azure.storage import BlobService
 
 
+JSONP_CALLBACK_NAME = 'renderData'
+
 zero_fill_daily = lambda data: postprocessors.day_fill(data, 0)
 zero_fill_weekly = lambda data: postprocessors.week_fill(data, 0)
 monthly_max = lambda data: aggregators.monthly(data, max)
@@ -60,13 +62,14 @@ def generate_and_upload(gauge_factory, config, logger):
         'took': (datetime.datetime.now() - start).seconds
     }
     report_json = json.dumps(report, indent=4, default=json_date_serializer)
-
+    report_content = '{0}({1})'.format(JSONP_CALLBACK_NAME, report_json)
+    
     blob_service = BlobService(config['azure.account'], config['azure.key'])
     blob_service.create_container(config['azure.blob.container'])
     blob_service.set_container_acl(config['azure.blob.container'],
                                    x_ms_blob_public_access='container')
     blob_service.put_blob(config['azure.blob.container'],
-                          config['azure.blob.name'], report_json, 'BlockBlob')
+                          config['azure.blob.name'], report_content, 'BlockBlob')
 
     took = (datetime.datetime.now() - start).seconds
     logger.info('Report generated and uploaded. Took {0} s.'.format(took))
