@@ -67,8 +67,8 @@ tasks = [
 #     (fb.friends_count, ('*/2',)),
 #     (runkeeper.activities_and_calories, ('*', '59')),
 #     (runkeeper.sleeps, ('*',)),
-#     (runkeeper.weight, ('*/12',)),
-#     (kloutcom.score, ('*/12',)),
+#     (runkeeper.weight, ('*/2',)),
+#     (kloutcom.score, ('*/2',)),
 #     (atelog.coffees, ('*',)),
 #     (reporting.generate_and_upload, ('*', '*/20'))
 # ]
