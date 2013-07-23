@@ -2,7 +2,7 @@
 
 import logging
 import datetime
-from dateutil.tz import tzutc
+import pytz
 
 
 _simplegauges_factory = None
@@ -46,15 +46,35 @@ class requires(object):
         return decorator
 
 
-def utc_now():
-    return datetime.datetime.now(tzutc())
+def now_utc():
+    """returns UTC time with tzinfo since datetime.utcnow does not have
+    tzinfo
+    """
+
+    return datetime.datetime.now(pytz.utc)
 
 
 def today_utc():
-    return utc_now().date()
+    """returns datetime.datetime only containing year/month/day of UTC now
+    where hh:mm:ss.ms cleared off
+    """
+
+    dt = now_utc()
+    dt = datetime.datetime.combine(dt.date(), datetime.time(tzinfo=pytz.utc))
+    return dt
+
+
+def epoch_for_datetime(dt):
+    """converts a given datetime.datetime to UNIX epoch time in seconds
+    """
+
+    epoch = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
+    return int((dt - epoch).total_seconds())
 
 
 def epoch_for_day(day):
-    day_time = datetime.datetime.combine(day, datetime.time(tzinfo=tzutc()))
-    epoch = datetime.datetime(1970, 1, 1, tzinfo=tzutc())
-    return int((day_time - epoch).total_seconds())
+    """converts a given datetime.date to UNIX epoch time in seconds
+    """
+
+    day_dt = datetime.datetime.combine(day, datetime.time(tzinfo=pytz.utc))
+    return epoch_for_datetime(day_dt)

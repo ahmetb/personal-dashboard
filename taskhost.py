@@ -29,9 +29,10 @@ def main():
         logger.critical(e)
         sys.exit(1)
 
-    gauges_ds = simplegauges.datastores.azuretable.AzureGaugeDatastore(
-        config['azure.account'], config['azure.key'], config['azure.table'])
-    gauge_factory = simplegauges.daily_gauge_factory(gauges_ds)
+    from simplegauges.datastores.azuretable import AzureGaugeDatastore
+    gauges_ds = AzureGaugeDatastore(config['azure.account'],
+                                    config['azure.key'], config['azure.table'])
+    gauge_factory = simplegauges.gauge_factory(gauges_ds)
     tasks.set_simplegauges_factory(gauge_factory)
     tasks.set_config(config)
 

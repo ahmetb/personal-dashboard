@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from . import requires, utc_now, today_utc
+from . import requires, now_utc, today_utc
 from simplegauges import interpolators, postprocessors, aggregators
 import datetime
 from datetime import timedelta
@@ -31,6 +31,7 @@ def generate_and_upload(gauge_factory, config, logger):
     runkeeper_calories = gauge_factory('runkeeper.calories_burned')
     runkeeper_weight = gauge_factory('runkeeper.weight')
     atelog_coffees = gauge_factory('atelog.coffees')
+    tmp102_celsius = gauge_factory('tmp102.temperature', gauge_type='hourly')
 
     data = {}
     data_sources = [  # out name, gauge, days back, aggregator, postprocessors
@@ -49,6 +50,7 @@ def generate_and_upload(gauge_factory, config, logger):
         ('runkeeper.weight', runkeeper_weight, 60, weekly_min,
             [zero_fill_weekly, interpolators.linear]),
         ('atelog.coffees', atelog_coffees, 14, None, [zero_fill_daily]),
+        ('tmp102.temperature', tmp102_celsius, 3, None, None)
     ]
 
     for ds in data_sources:
@@ -57,7 +59,7 @@ def generate_and_upload(gauge_factory, config, logger):
                                       post_processors=ds[4])
 
     report = {
-        'generated': str(utc_now()),
+        'generated': str(now_utc()),
         'data': data,
         'took': (datetime.datetime.now() - start).seconds
     }

@@ -6,8 +6,9 @@ from foursquare import Foursquare
 
 @requires('foursquare.access_token')
 def checkins(gauge_factory, config, logger):
-    """Check-ins done since current day (UTC) 00:00:00.
+    """Number of foursquare check-ins done since midnight today in UTC.
     """
+
     gauge = gauge_factory('foursquare.checkins')
     client = Foursquare(access_token=config['foursquare.access_token'])
 
