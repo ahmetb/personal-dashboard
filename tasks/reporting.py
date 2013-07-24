@@ -34,7 +34,7 @@ def generate_and_upload(gauge_factory, config, logger):
     tmp102_celsius = gauge_factory('tmp102.temperature', gauge_type='hourly')
 
     data = {}
-    data_sources = [  # out name, gauge, days back, aggregator, postprocessors
+    data_sources = [  # (out key, gauge, days back, aggregator, postprocessors)
         ('twitter.followers', twitter_followers, 30, None,
             [zero_fill_daily, interpolators.linear]),
         ('twitter.tweets', twitter_tweets, 30, None, [zero_fill_daily]),

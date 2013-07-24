@@ -6,20 +6,25 @@ import healthgraph
 
 @requires('runkeeper.access_token')
 def activities_and_calories(gauge_factory, config, logger):
+    #TODO runkeeper returns activity start_time in local time, convert to UTC
     activity_gauge = gauge_factory('runkeeper.activities')
     calorie_gauge = gauge_factory('runkeeper.calories_burned')
 
     user = healthgraph.User(session=healthgraph.
                             Session(config['runkeeper.access_token']))
+    activities_iter = user.get_fitness_activity_iter()
 
-    activities = list(user.get_fitness_activity_iter())
-    #TODO code above loads all fitness activities, inefficient
+    today = today_utc().date()
+    today_activities = []
+    for a in activities_iter:  # breaking early prevents loading all results
+        day = a['start_time'].date()
+        if day == today:
+            today_activities.append(a)
+        elif day < today:
+            break
 
-    #TODO runkeeper returns start_time in local time, convert to UTC
-    today_data = filter(lambda a: a['start_time'].date() == today_utc(),
-                        activities)
-    total_activities = len(today_data)
-    total_calories = int(sum([a['total_calories'] for a in today_data]))
+    total_activities = len(today_activities)
+    total_calories = int(sum([a['total_calories'] for a in today_activities]))
 
     activity_gauge.save(today_utc(), total_activities)
     calorie_gauge.save(today_utc(), total_calories)
@@ -33,13 +38,17 @@ def sleeps(gauge_factory, config, logger):
 
     user = healthgraph.User(session=healthgraph.
                             Session(config['runkeeper.access_token']))
+    sleeps_iter = user.get_sleep_measurement_iter()
+    today = today_utc().date()
+    today_sleeps = []
+    for s in sleeps_iter:  # breaking early prevents loading all results
+        day = s['timestamp'].date()
+        if day == today:
+            today_sleeps.append(a)
+        elif day < today:
+            break
 
-    sleeps = list(user.get_sleep_measurement_iter())
-    #TODO code above loads all sleep measurements, inefficient
-
-    today_sleeps = filter(lambda s: s['timestamp'].date() == today_utc(),
-                          sleeps)
-    total_sleep_mins = sum([a['total_sleep'] for a in today_sleeps])
+    total_sleep_mins = sum([s['total_sleep'] for s in today_sleeps])
 
     gauge.save(today_utc(), total_sleep_mins)
     logger.info('Saved {0} min. sleep for {1}'.format(total_sleep_mins,
@@ -56,14 +65,16 @@ def weight(gauge_factory, config, logger):
     user = healthgraph.User(session=healthgraph.
                             Session(config['runkeeper.access_token']))
 
-    weights = list(user.get_weight_measurement_iter())
-    #TODO code above loads all weight measurements, inefficient
+    weight = None
+    weights_iter = user.get_weight_measurement_iter()
 
     # since items are loaded in descending order, first result is latest weight
-    if weights:
-        last_known_weight = weights[0]['weight']
-        gauge.save(today_utc(), last_known_weight)
-        logger.info('Saved {0} kg weight for {1}'.format(last_known_weight,
-                                                         today_utc()))
+    for w in weights_iter:
+        weight = w['weight']
+        break  # no need to load results further
+
+    if weight:
+        gauge.save(today_utc(), weight)
+        logger.info('Saved {0} kg weight for {1}'.format(weight, today_utc()))
     else:
-        logger.warning('Runkeeper account has no weight measurement data.')
+        logger.warning('Runkeeper has no weight measurement data.')
