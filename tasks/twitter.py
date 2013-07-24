@@ -36,9 +36,7 @@ def tweets_count(gauge_factory, config, logger):
     timeline = filter(lambda st: st.created_at.date() == today, timeline)
 
     if config['twitter.exclude_mentions']:
-      print [st.text for st in timeline]
       timeline = filter(lambda s: not s.text.startswith("@"), timeline)
-      print [st.text for st in timeline]
 
     c = len(timeline)
     logger.info('Saved tweets count: {0} for {1}'.format(c, today))
