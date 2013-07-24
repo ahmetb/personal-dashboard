@@ -23,7 +23,7 @@ def extract_keys(dictionary, keys):
     d = {}
     for k in keys:
         if k not in dictionary:
-            raise Exception('task configuration "{0}" does not exist.'
+            raise Exception('task configuration key "{0}" does not exist.'
                             .format(k))
         d[k] = dictionary[k]
     return d

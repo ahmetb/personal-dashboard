@@ -24,13 +24,22 @@ def followers_count(gauge_factory, config, logger):
 
 
 @requires('twitter.consumer_key', 'twitter.consumer_secret',
-          'twitter.access_token', 'twitter.access_secret')
+          'twitter.access_token', 'twitter.access_secret',
+          'twitter.exclude_mentions')
 def tweets_count(gauge_factory, config, logger):
     #TODO if you have tweeted 200+ tweets in a day, records as 200
     gauge = gauge_factory('twitter.tweets')
     api = twitter_api_handle(config)
+    today = today_utc().date()
 
     timeline = api.user_timeline(count=200)
-    c = sum(1 for st in timeline if st.created_at.date() == today_utc())
-    logger.info('Saved tweets count: {0} for {1}'.format(c, today_utc()))
+    timeline = filter(lambda st: st.created_at.date() == today, timeline)
+
+    if config['twitter.exclude_mentions']:
+      print [st.text for st in timeline]
+      timeline = filter(lambda s: not s.text.startswith("@"), timeline)
+      print [st.text for st in timeline]
+
+    c = len(timeline)
+    logger.info('Saved tweets count: {0} for {1}'.format(c, today))
     gauge.save(today_utc(), c)
