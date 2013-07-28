@@ -30,27 +30,25 @@ def generate_and_upload(gauge_factory, config, logger):
     runkeeper_activities = gauge_factory('runkeeper.activities')
     runkeeper_calories = gauge_factory('runkeeper.calories_burned')
     runkeeper_weight = gauge_factory('runkeeper.weight')
-    atelog_coffees = gauge_factory('atelog.coffees')
     tmp102_celsius = gauge_factory('tmp102.temperature', gauge_type='hourly')
 
     data = {}
-    data_sources = [  # (out key, gauge, days back, aggregator, postprocessors)
+    data_sources = [
+        # (output key, gauge, days back, aggregator, postprocessors)
         ('twitter.followers', twitter_followers, 30, None,
             [zero_fill_daily, interpolators.linear]),
-        ('twitter.tweets', twitter_tweets, 30, None, [zero_fill_daily]),
-        ('twitter.tweets', twitter_tweets, 30, None, [zero_fill_daily]),
+        ('twitter.tweets', twitter_tweets, 20, None, [zero_fill_daily]),
         ('facebook.friends', fb_friends, 180, monthly_max, None),
-        ('foursquare.checkins', foursq_checkins, 7, None, [zero_fill_daily]),
-        ('klout.score', klout_score, 120, weekly_max, [zero_fill_weekly,
+        ('foursquare.checkins', foursq_checkins, 14, None, [zero_fill_daily]),
+        ('klout.score', klout_score, 30, weekly_max, [zero_fill_weekly,
                                                        interpolators.linear]),
-        ('runkeeper.calories', runkeeper_calories, 70, weekly_sum,
+        ('runkeeper.calories', runkeeper_calories, 60, weekly_sum,
             [zero_fill_weekly]),
-        ('runkeeper.activities', runkeeper_activities, 70, weekly_sum,
+        ('runkeeper.activities', runkeeper_activities, 60, weekly_sum,
             [zero_fill_weekly]),
-        ('runkeeper.weight', runkeeper_weight, 60, weekly_min,
+        ('runkeeper.weight', runkeeper_weight, 180, weekly_min,
             [zero_fill_weekly, interpolators.linear]),
-        ('atelog.coffees', atelog_coffees, 14, None, [zero_fill_daily]),
-        ('tmp102.temperature', tmp102_celsius, 3, None, None)
+        ('tmp102.temperature', tmp102_celsius, 2.5, None, None)
     ]
 
     for ds in data_sources:
