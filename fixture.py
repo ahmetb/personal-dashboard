@@ -58,6 +58,7 @@ tasks = [
 # from tasks import atelog
 # from tasks import reporting
 # from tasks import tmp102
+# from tasks import lastfm
 
 # tasks = [
 #     (twitter.followers_count, ('*', '59')),
@@ -70,5 +71,6 @@ tasks = [
 #     (kloutcom.score, ('*/2',)),
 #     (tmp102.temperature, ('*',)),
 #     (atelog.coffees, ('*',)),
+#     (lastfm.tracks_listened, ('*', '59')),
 #     (reporting.generate_and_upload, ('*', '*/20'))
 # ]
