@@ -31,6 +31,7 @@ def generate_and_upload(gauge_factory, config, logger):
     runkeeper_calories = gauge_factory('runkeeper.calories_burned')
     runkeeper_weight = gauge_factory('runkeeper.weight')
     tmp102_celsius = gauge_factory('tmp102.temperature', gauge_type='hourly')
+    lastfm_listened = gauge_factory('lastfm.listened')
 
     data = {}
     data_sources = [
@@ -40,8 +41,9 @@ def generate_and_upload(gauge_factory, config, logger):
         ('twitter.tweets', twitter_tweets, 20, None, [zero_fill_daily]),
         ('facebook.friends', fb_friends, 180, monthly_max, None),
         ('foursquare.checkins', foursq_checkins, 14, None, [zero_fill_daily]),
+        ('lastfm.listened', lastfm_listened, 14, None, [zero_fill_daily]),
         ('klout.score', klout_score, 30, weekly_max, [zero_fill_weekly,
-                                                       interpolators.linear]),
+                                                      interpolators.linear]),
         ('runkeeper.calories', runkeeper_calories, 60, weekly_sum,
             [zero_fill_weekly]),
         ('runkeeper.activities', runkeeper_activities, 60, weekly_sum,
