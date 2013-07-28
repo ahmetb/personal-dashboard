@@ -69,7 +69,7 @@ tasks = [
 #     (runkeeper.sleeps, ('*',)),
 #     (runkeeper.weight, ('*/2',)),
 #     (kloutcom.score, ('*/2',)),
-#     (tmp102.temperature, ('*',)),
+#     (tmp102.temperature, ('*', '*/20')),
 #     (atelog.coffees, ('*',)),
 #     (lastfm.tracks_listened, ('*', '59')),
 #     (reporting.generate_and_upload, ('*', '*/20'))
