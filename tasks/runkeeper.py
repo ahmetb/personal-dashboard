@@ -20,7 +20,7 @@ def activities_and_calories(gauge_factory, config, logger):
         day = a['start_time'].date()
         if day == today:
             today_activities.append(a)
-        elif day < today:
+        elif (today - day).days > 2:
             break
 
     total_activities = len(today_activities)
@@ -44,8 +44,8 @@ def sleeps(gauge_factory, config, logger):
     for s in sleeps_iter:  # breaking early prevents loading all results
         day = s['timestamp'].date()
         if day == today:
-            today_sleeps.append(a)
-        elif day < today:
+            today_sleeps.append(s)
+        elif (today - day).days > 2:
             break
 
     total_sleep_mins = sum([s['total_sleep'] for s in today_sleeps])
