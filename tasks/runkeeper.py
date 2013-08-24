@@ -1,14 +1,15 @@
 # coding: utf-8
 
 from . import requires, today_utc
+from pytz import timezone, UTC
 import healthgraph
 
 
-@requires('runkeeper.access_token')
+@requires('runkeeper.access_token','runkeeper.local_tz')
 def activities_and_calories(gauge_factory, config, logger):
-    #TODO runkeeper returns activity start_time in local time, convert to UTC
     activity_gauge = gauge_factory('runkeeper.activities')
     calorie_gauge = gauge_factory('runkeeper.calories_burned')
+    local_tz = timezone(config['runkeeper.local_tz'])
 
     user = healthgraph.User(session=healthgraph.
                             Session(config['runkeeper.access_token']))
@@ -17,7 +18,9 @@ def activities_and_calories(gauge_factory, config, logger):
     today = today_utc().date()
     today_activities = []
     for a in activities_iter:  # breaking early prevents loading all results
-        day = a['start_time'].date()
+        activity_time = a['start_time'].replace(tzinfo=local_tz)
+        activity_time_utc = UTC.normalize(activity_time)
+        day = activity_time_utc.date()
         if day == today:
             today_activities.append(a)
         elif (today - day).days > 2:
