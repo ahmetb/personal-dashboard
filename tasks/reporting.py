@@ -32,31 +32,39 @@ def generate_and_upload(gauge_factory, config, logger):
     runkeeper_weight = gauge_factory('runkeeper.weight')
     tmp102_celsius = gauge_factory('tmp102.temperature', gauge_type='hourly')
     lastfm_listened = gauge_factory('lastfm.listened')
+    jawbone_sleeps = gauge_factory('jawbone.sleeps')
+    jawbone_steps = gauge_factory('jawbone.steps')
 
     data = {}
     data_sources = [
-        # (output key, gauge, days back, aggregator, postprocessors)
-        ('twitter.followers', twitter_followers, 30, None,
+        # (output key, gauge, days back, before_days, aggregator, postprocessors)
+        ('twitter.followers', twitter_followers, 30, 0, None,
             [zero_fill_daily, interpolators.linear]),
-        ('twitter.tweets', twitter_tweets, 20, None, [zero_fill_daily]),
-        ('facebook.friends', fb_friends, 180, monthly_max, None),
-        ('foursquare.checkins', foursq_checkins, 14, None, [zero_fill_daily]),
-        ('lastfm.listened', lastfm_listened, 14, None, [zero_fill_daily]),
-        ('klout.score', klout_score, 30, weekly_max, [zero_fill_weekly,
+        ('twitter.tweets', twitter_tweets, 20, 0, None, [zero_fill_daily]),
+        ('facebook.friends', fb_friends, 180, 0, monthly_max, None),
+        ('foursquare.checkins', foursq_checkins, 14, 0, None, [zero_fill_daily]),
+        ('lastfm.listened', lastfm_listened, 14, 0, None, [zero_fill_daily]),
+        ('klout.score', klout_score, 30, 0, weekly_max, [zero_fill_weekly,
                                                       interpolators.linear]),
-        ('runkeeper.calories', runkeeper_calories, 60, weekly_sum,
+        ('runkeeper.calories', runkeeper_calories, 60, 0, weekly_sum,
             [zero_fill_weekly]),
-        ('runkeeper.activities', runkeeper_activities, 60, weekly_sum,
+        ('runkeeper.activities', runkeeper_activities, 60, 0,weekly_sum,
             [zero_fill_weekly]),
-        ('runkeeper.weight', runkeeper_weight, 180, weekly_min,
+        ('runkeeper.weight', runkeeper_weight, 180, 0,weekly_min,
             [zero_fill_weekly, interpolators.linear]),
-        ('tmp102.temperature', tmp102_celsius, 2.5, None, None)
+        ('sleeps', jawbone_sleeps, 14, 0,None, [zero_fill_daily,
+            interpolators.linear]),
+        ('steps', jawbone_steps, 14, 0,None, [zero_fill_daily,
+            interpolators.linear]),
+        ('tmp102.temperature', tmp102_celsius, 2.5, 0, None, None)
     ]
 
     for ds in data_sources:
+        before = today_utc() - timedelta(days=ds[3])
         data[ds[0]] = ds[1].aggregate(today_utc() - timedelta(days=ds[2]),
-                                      aggregator=ds[3],
-                                      post_processors=ds[4])
+                                      before_date=before,
+                                      aggregator=ds[4],
+                                      post_processors=ds[5])
 
     report = {
         'generated': str(now_utc()),

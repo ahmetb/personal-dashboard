@@ -56,21 +56,25 @@ tasks = [
 # from tasks import fb
 # from tasks import runkeeper
 # from tasks import atelog
-# from tasks import reporting
+from tasks import reporting
 # from tasks import tmp102
 # from tasks import lastfm
+from tasks import jawboneup
 
-# tasks = [
+tasks = [
 #     (twitter.followers_count, ('*', '59')),
 #     (twitter.tweets_count, ('*', '59')),
 #     (foursq.checkins, ('*', '59')),
 #     (fb.friends_count, ('*/2',)),
-#     (runkeeper.activities_and_calories, ('*', '59')),
+  # (runkeeper.activities_and_calories, ('*', '59')),
 #     (runkeeper.sleeps, ('*',)),
 #     (runkeeper.weight, ('*/2',)),
 #     (kloutcom.score, ('*/2',)),
 #     (tmp102.temperature, ('*', '*/20')),
 #     (atelog.coffees, ('*',)),
 #     (lastfm.tracks_listened, ('*', '59')),
-#     (reporting.generate_and_upload, ('*', '*/20'))
-# ]
+    (reporting.generate_and_upload, ('*', '*/20')),
+  # (jawboneup.sleeps, ('*', '*/30')),
+  # (jawboneup.steps, ('*', '*/30')),
+
+]
