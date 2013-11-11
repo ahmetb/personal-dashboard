@@ -8,6 +8,12 @@ This piece of software is collecting data about me all the time and aggregating 
 
 See a demo on [my home page](https://ahmetalpbalkan.com/).
 
+
+### Websites Using personal-dashboard
+
+* [/home/alp](https://ahmetalpbalkan.com/)
+* (add yours)
+
 # Installation
 
 ### Requirements
