@@ -2,6 +2,18 @@
 
 This piece of software is collecting data about me all the time and aggregating them. [**Read about this project more &rarr;**](http://ahmetalpbalkan.com/blog/personal-dashboard/)
 
+![](https://ahmetalpbalkan.com/blog/static/images/2013/07/bedroom.png)
+![](https://ahmetalpbalkan.com/blog/static/images/2013/07/music.png)
+![](https://ahmetalpbalkan.com/blog/static/images/2013/07/twitter.png)
+
+See a demo on [my home page](https://ahmetalpbalkan.com/).
+
+
+### Websites Using personal-dashboard
+
+* [/home/alp](https://ahmetalpbalkan.com/)
+* (add yours)
+
 # Installation
 
 ### Requirements
