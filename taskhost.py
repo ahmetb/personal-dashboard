@@ -42,22 +42,24 @@ def main():
         logger.error('No tasks found in the fixture.py')
         sys.exit(1)
 
+    errors = False
     for task in fixture.tasks:
         method = task[0]
         name = '{0}.{1}'.format(method.__module__, method.__name__)
-
-        # if not task[1]:
-        #     logger.critical('Task {0} scheduling interval is invalid'
-        #                     .format(name))
         try:
             task[0]()
             logger.info('Successfully bootstrapped: {0}'.format(name))
         except Exception as e:
+            errors = True
             logger.error('Error while bootstrapping: {0}'.format(name))
             logger.error(e)
-            raise e
 
-    logger.info('All tasks ran successfully once. Starting scheduler...')
+    if errors:
+        logger.info('Starting scheduler in 10 seconds...')
+        time.sleep(10)
+    else:
+        logger.info('Starting scheduler...')
+
     # at this point all tasks ran once successfully
     sched = Scheduler()
 
