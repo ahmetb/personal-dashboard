@@ -34,6 +34,7 @@ def generate_and_upload(gauge_factory, config, logger):
     lastfm_listened = gauge_factory('lastfm.listened')
     jawbone_sleeps = gauge_factory('jawbone.sleeps')
     jawbone_steps = gauge_factory('jawbone.steps')
+    jawbone_caffeine = gauge_factory('jawbone.caffeine')
 
     data = {}
     data_sources = [
@@ -56,6 +57,7 @@ def generate_and_upload(gauge_factory, config, logger):
             interpolators.linear]),
         ('steps', jawbone_steps, 14, None, [zero_fill_daily,
             interpolators.linear]),
+        ('caffeine', jawbone_caffeine, 30, None, [zero_fill_daily]),
         ('tmp102.temperature', tmp102_celsius, 2.5, None, None)
     ]
 

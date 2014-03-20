@@ -55,3 +55,29 @@ def steps(gauge_factory, config, logger):
         else:
             gauge.save(day, steps)
             logger.info('Saved {0} steps on {1}'.format(steps, day_date))
+
+
+
+@requires('jawboneup.access_token')
+def caffeine(gauge_factory, config, logger):
+    gauge = gauge_factory('jawbone.caffeine')
+    access_token = config['jawboneup.access_token']
+
+    headers = {'Authorization' : 'Bearer {0}'.format(access_token)}
+    r = requests.get('https://jawbone.com/nudge/api/users/@me/meals',
+                     headers=headers)
+
+    for i in range(DAYS_BACK):
+        day = today_utc() - timedelta(days=i)
+        resp = r.json()
+        moves = resp['data']['items']
+        day_date = day.date()
+        today_fmt = int(day_date.strftime('%Y%m%d'))
+        today_moves = filter(lambda m: m['date'] == today_fmt, moves)
+        caffeine = sum([m['details']['caffeine'] for m in today_moves])
+
+        if steps == 0:
+            logger.info('Caffeine not found on {0}, not saving.'.format(day_date))
+        else:
+            gauge.save(day, caffeine)
+            logger.info('Saved {0}mg. caffeine  on {1}'.format(caffeine, day_date))

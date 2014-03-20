@@ -75,5 +75,6 @@ tasks = [
 #     (lastfm.tracks_listened, ('*', '59')),
 #     (jawboneup.sleeps, ('*', '*/30')),
 #     (jawboneup.steps, ('*', '*/30')),
+#     (jawboneup.caffeine, ('*', '*/30')),
 #     (reporting.generate_and_upload, ('*', '*/20')),
 # ]
