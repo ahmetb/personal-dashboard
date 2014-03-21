@@ -70,11 +70,11 @@ def caffeine(gauge_factory, config, logger):
     for i in range(DAYS_BACK):
         day = today_utc() - timedelta(days=i)
         resp = r.json()
-        moves = resp['data']['items']
+        meals = resp['data']['items']
         day_date = day.date()
         today_fmt = int(day_date.strftime('%Y%m%d'))
-        today_moves = filter(lambda m: m['date'] == today_fmt, moves)
-        caffeine = sum([m['details']['caffeine'] for m in today_moves])
+        today_meals = filter(lambda m: m['date'] == today_fmt, meals)
+        caffeine = sum([m['details']['caffeine'] for m in today_meals])
 
         if steps == 0:
             logger.info('Caffeine not found on {0}, not saving.'.format(day_date))
