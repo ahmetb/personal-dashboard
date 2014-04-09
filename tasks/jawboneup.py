@@ -76,7 +76,7 @@ def caffeine(gauge_factory, config, logger):
         today_meals = filter(lambda m: m['date'] == today_fmt, meals)
         caffeine = sum([m['details']['caffeine'] for m in today_meals])
 
-        if steps == 0:
+        if caffeine == 0:
             logger.info('Caffeine not found on {0}, not saving.'.format(day_date))
         else:
             gauge.save(day, caffeine)
