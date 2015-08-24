@@ -16,6 +16,19 @@ See a demo on [my home page](https://ahmetalpbalkan.com/).
 
 # Installation
 
+### Easy way: Docker
+
+Copy your edits to `fixture.py` and `tasks.config` to `/pd` on the host machine.
+
+    $ docker build -t pd .
+    $ docker run -d --restart=always \
+        -v /pd/tasks.config:/app/tasks.config:ro \
+        -v /pd/fixture.py:/app/fixture.py:ro \
+        --name=personal_dashboard pd
+
+Validate it works with `docker logs -f personal_dashboard` and you do not need
+to do any of the steps below. :)
+
 ### Requirements
 
 You should get the following packages on your system:
