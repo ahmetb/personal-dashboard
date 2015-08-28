@@ -33,6 +33,7 @@ def generate_and_upload(gauge_factory, config, logger):
     tmp102_celsius = gauge_factory('tmp102.te  mperature', gauge_type='hourly')
     lastfm_listened = gauge_factory('lastfm.listened')
     jawbone_sleeps = gauge_factory('jawbone.sleeps')
+    jawbone_heartrate = gauge_factory('jawbone.resting_heartrate')
     jawbone_steps = gauge_factory('jawbone.steps')
     jawbone_caffeine = gauge_factory('jawbone.caffeine')
 
@@ -54,6 +55,8 @@ def generate_and_upload(gauge_factory, config, logger):
         ('runkeeper.weight', runkeeper_weight, 180,weekly_min,
             [zero_fill_weekly, interpolators.linear]),
         ('sleeps', jawbone_sleeps, 14, None, [zero_fill_daily,
+            interpolators.linear]),
+        ('heartrate', jawbone_heartrate, 21, None, [zero_fill_daily,
             interpolators.linear]),
         ('steps', jawbone_steps, 14, None, [zero_fill_daily,
             interpolators.linear]),
