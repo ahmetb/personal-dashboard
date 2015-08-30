@@ -96,9 +96,9 @@ def heart_rate(gauge_factory, config, logger):
         today_fmt = int(day_date.strftime('%Y%m%d'))
         today = filter(lambda hr: hr['date'] == today_fmt, items)
 
-        if not today:
+        if not today or len(today) == 0 or not today[0]['resting_heartrate']:
              logger.info('Heart rate not found on {0}, not saving.'.format(day_date))
         else:
-	    hr = today[0]['resting_heartrate']
+            hr = today[0]['resting_heartrate']
             gauge.save(day, hr)
             logger.info('Saved heart rate {0} on {1}'.format(hr, day_date))
