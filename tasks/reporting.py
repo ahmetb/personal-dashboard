@@ -30,7 +30,7 @@ def generate_and_upload(gauge_factory, config, logger):
     runkeeper_activities = gauge_factory('runkeeper.activities')
     runkeeper_calories = gauge_factory('runkeeper.calories_burned')
     runkeeper_weight = gauge_factory('runkeeper.weight')
-    tmp102_celsius = gauge_factory('tmp102.te  mperature', gauge_type='hourly')
+    tmp102_celsius = gauge_factory('tmp102.temperature', gauge_type='hourly')
     lastfm_listened = gauge_factory('lastfm.listened')
     jawbone_sleeps = gauge_factory('jawbone.sleeps')
     jawbone_heartrate = gauge_factory('jawbone.resting_heartrate')
