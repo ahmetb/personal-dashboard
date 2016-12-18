@@ -1,18 +1,11 @@
 package metrics
 
-import (
-	"fmt"
-	"time"
-)
+import "time"
 
 type Measurement struct {
 	Source string    `datastore:"source"`
 	Date   time.Time `datastore:"date"`
 	Value  float64   `datastore:"value,noindex"`
-}
-
-func (d Measurement) key() string {
-	return fmt.Sprintf("%s@%s", d.Source, d.Date.UTC().Format(time.RFC3339))
 }
 
 type DataStore interface {

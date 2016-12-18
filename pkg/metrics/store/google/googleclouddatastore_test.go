@@ -1,4 +1,4 @@
-package metrics_test
+package google_test
 
 import (
 	"os"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
+	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics/store/google"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +16,7 @@ func Test_googleCloudDatastore(t *testing.T) {
 	if project == "" {
 		t.Skip("DATASTORE_PROJECT_ID not specified for Google Cloud Datastore tests.")
 	}
-	ds, err := metrics.NewGoogleCloudDatastore(project, "Metrics")
+	ds, err := google.NewDatastore(project, "Metrics")
 	require.Nil(t, err)
 
 	var (
