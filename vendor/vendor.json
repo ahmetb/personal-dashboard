@@ -57,6 +57,24 @@
 			"revisionTime": "2016-10-29T20:57:26Z"
 		},
 		{
+			"checksumSHA1": "7Ta13bcuAlF1esPxSPljmpsSUwc=",
+			"path": "github.com/go-kit/kit/log",
+			"revision": "44df43eae441b8197be13e2004ccdf535e24b277",
+			"revisionTime": "2016-12-18T14:44:39Z"
+		},
+		{
+			"checksumSHA1": "KxX/Drph+byPXBFIXaCZaCOAnrU=",
+			"path": "github.com/go-logfmt/logfmt",
+			"revision": "390ab7935ee28ec6b286364bba9b4dd6410cb3d5",
+			"revisionTime": "2016-11-15T14:25:13Z"
+		},
+		{
+			"checksumSHA1": "2sj/DbXoXdnPAfjAEyhS0Jj5QL0=",
+			"path": "github.com/go-stack/stack",
+			"revision": "100eb0c0a9c5b306ca2fb4f165df21d80ada4b82",
+			"revisionTime": "2016-05-14T03:44:11Z"
+		},
+		{
 			"checksumSHA1": "kBeNcaKk56FguvPSUCEaH6AxpRc=",
 			"path": "github.com/golang/protobuf/proto",
 			"revision": "8ee79997227bf9b34611aee7946ae64735e6fd93",
@@ -97,6 +115,12 @@
 			"path": "github.com/jinzhu/now",
 			"revision": "d9861969c7a7e84746d341c09020c2ef8a617f8f",
 			"revisionTime": "2016-06-12T09:26:03Z"
+		},
+		{
+			"checksumSHA1": "abKzFXAn0KDr5U+JON1ZgJ2lUtU=",
+			"path": "github.com/kr/logfmt",
+			"revision": "b84e30acd515aadc4b783ad4ff83aff3299bdfe0",
+			"revisionTime": "2014-02-26T03:06:59Z"
 		},
 		{
 			"checksumSHA1": "ynJSWoF6v+3zMnh9R0QmmG6iGV8=",
