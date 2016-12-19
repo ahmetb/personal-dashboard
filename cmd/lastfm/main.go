@@ -12,17 +12,15 @@ import (
 	"github.com/jinzhu/now"
 )
 
-type config struct {
-	Tasks struct {
-		LastFM struct {
-			APIKey string `toml:"api_key"`
-			User   string `toml:"user"`
-		} `toml:"lastfm"`
-	} `toml:"tasks"`
-}
-
 func main() {
-	var cfg config
+	var cfg struct {
+		Tasks struct {
+			LastFM struct {
+				APIKey string `toml:"api_key"`
+				User   string `toml:"user"`
+			} `toml:"lastfm"`
+		} `toml:"tasks"`
+	}
 	log := task.LoggerWithTask("lastfm")
 	log.Log("msg", "starting")
 
@@ -61,7 +59,7 @@ func main() {
 	log.Log("msg", "parsed response", "songs", len(v.RecentTracks.Track))
 
 	if err := store.Save(metrics.Metric{
-		Name: "tracks_listened",
+		Name: "lastfm.tracks_listened",
 		Kind: metrics.Daily,
 	}.NewMeasurement(time.Now(), float64(len(v.RecentTracks.Track)))); err != nil {
 		task.LogFatal(log, "error", err)

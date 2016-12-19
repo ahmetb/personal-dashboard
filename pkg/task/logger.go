@@ -8,7 +8,7 @@ import (
 
 func LoggerWithTask(name string) *log.Context {
 	return log.NewContext(log.NewSyncLogger(log.NewLogfmtLogger(os.Stdout))).
-		With("time", log.DefaultTimestampUTC, "task", name)
+		With("task", name, "time", log.DefaultTimestampUTC)
 }
 
 func LogFatal(logger *log.Context, keyvals ...interface{}) {
