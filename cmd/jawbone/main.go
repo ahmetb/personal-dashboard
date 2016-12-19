@@ -31,9 +31,10 @@ type subcmd func(log *logger.Context, c config, daysBack int, store metrics.Data
 
 var (
 	subcmds = map[string]subcmd{
-		"sleeps": sleeps,
-		"steps":  steps,
-	}
+		"sleeps":    sleeps,
+		"steps":     steps,
+		"caffeine":  caffeine,
+		"heartrate": restingHeartrate}
 )
 
 func main() {
@@ -80,21 +81,9 @@ func sleeps(log *logger.Context, c config, daysBack int, store metrics.Datastore
 		return err
 	}
 
-	var v struct {
-		Data struct {
-			Sleeps []struct {
-				Date    int `json:"date"`
-				Details struct {
-					AsleepTime uint64 `json:"asleep_time"`
-					AwakeTime  uint64 `json:"awake_time"`
-				} `json:"details"`
-			} `json:"items"`
-		} `json:"data"`
-	}
-	if err := json.Unmarshal(resp, &v); err != nil {
-		{
-			return errors.Wrap(err, "failed to parse the response")
-		}
+	v, err := parseJawboneResponse(resp)
+	if err != nil {
+		return err
 	}
 
 	metric := metrics.Metric{
@@ -106,7 +95,7 @@ func sleeps(log *logger.Context, c config, daysBack int, store metrics.Datastore
 		dayInt, _ := strconv.Atoi(fmt.Sprintf("%d%02d%02d", day.Year(), day.Month(), day.Day()))
 
 		totalMins := 0.0
-		for _, sleep := range v.Data.Sleeps { // filter sleeps by today
+		for _, sleep := range v.Data.Items { // filter sleeps by today
 			if sleep.Date == dayInt {
 				totalMins = float64(sleep.Details.AwakeTime-sleep.Details.AsleepTime) / 60
 			}
@@ -130,20 +119,9 @@ func steps(log *logger.Context, c config, daysBack int, store metrics.Datastore)
 		return err
 	}
 
-	var v struct {
-		Data struct {
-			Moves []struct {
-				Date    int `json:"date"`
-				Details struct {
-					Steps int `json:"steps"`
-				} `json:"details"`
-			} `json:"items"`
-		} `json:"data"`
-	}
-	if err := json.Unmarshal(resp, &v); err != nil {
-		{
-			return errors.Wrap(err, "failed to parse the response")
-		}
+	v, err := parseJawboneResponse(resp)
+	if err != nil {
+		return err
 	}
 
 	metric := metrics.Metric{
@@ -155,7 +133,7 @@ func steps(log *logger.Context, c config, daysBack int, store metrics.Datastore)
 		dayInt, _ := strconv.Atoi(fmt.Sprintf("%d%02d%02d", day.Year(), day.Month(), day.Day()))
 
 		total := 0
-		for _, move := range v.Data.Moves {
+		for _, move := range v.Data.Items {
 			if move.Date == dayInt {
 				total += move.Details.Steps
 			}
@@ -168,6 +146,80 @@ func steps(log *logger.Context, c config, daysBack int, store metrics.Datastore)
 				return errors.Wrap(err, "failed to save measurement")
 			}
 			log.Log("msg", "saved step measurement", "day", dayInt, "steps", total)
+		}
+	}
+	return nil
+}
+
+func caffeine(log *logger.Context, c config, daysBack int, store metrics.Datastore) error {
+	resp, err := doRequest("https://jawbone.com/nudge/api/users/@me/meals", c.Tasks.Jawbone.AccessToken)
+	if err != nil {
+		return err
+	}
+
+	v, err := parseJawboneResponse(resp)
+	if err != nil {
+		return err
+	}
+
+	metric := metrics.Metric{
+		Name: "caffeine_intake",
+		Kind: metrics.Daily}
+
+	for i := 0; i < daysBack; i++ {
+		day := now.New(time.Now().UTC()).BeginningOfDay().Add(-time.Hour * 24 * time.Duration(i))
+		dayInt, _ := strconv.Atoi(fmt.Sprintf("%d%02d%02d", day.Year(), day.Month(), day.Day()))
+
+		total := 0
+		for _, move := range v.Data.Items {
+			if move.Date == dayInt {
+				total += move.Details.Caffeine
+			}
+		}
+
+		if total == 0 {
+			log.Log("msg", "no caffeine found", "day", dayInt)
+		} else {
+			if err := store.Save(metric.NewMeasurement(day, float64(total))); err != nil {
+				return errors.Wrap(err, "failed to save measurement")
+			}
+			log.Log("msg", "saved caffeine measurement", "day", dayInt, "caffeine_mg", total)
+		}
+	}
+	return nil
+}
+
+func restingHeartrate(log *logger.Context, c config, daysBack int, store metrics.Datastore) error {
+	resp, err := doRequest("https://jawbone.com/nudge/api/users/@me/heartrates", c.Tasks.Jawbone.AccessToken)
+	if err != nil {
+		return err
+	}
+
+	v, err := parseJawboneResponse(resp)
+	if err != nil {
+		return err
+	}
+
+	metric := metrics.Metric{
+		Name: "resting_heartrate",
+		Kind: metrics.Daily}
+
+	for i := 0; i < daysBack; i++ {
+		day := now.New(time.Now().UTC()).BeginningOfDay().Add(-time.Hour * 24 * time.Duration(i))
+		dayInt, _ := strconv.Atoi(fmt.Sprintf("%d%02d%02d", day.Year(), day.Month(), day.Day()))
+
+		for _, item := range v.Data.Items {
+			if item.Date == dayInt {
+				hr := item.RestingHeartrate
+				if hr == 0 {
+					log.Log("msg", "no heartrate found", "day", dayInt)
+				} else {
+					if err := store.Save(metric.NewMeasurement(day, float64(hr))); err != nil {
+						return errors.Wrap(err, "failed to save measurement")
+					}
+					log.Log("msg", "saved resting heartrate measurement", "day", dayInt, "bpm", hr)
+				}
+			}
 		}
 	}
 	return nil
@@ -194,4 +246,27 @@ func doRequest(url, accessToken string) ([]byte, error) {
 		return nil, errors.Errorf("bad status=%q body=%s", resp.Status, string(b))
 	}
 	return b, nil
+}
+
+// jawboneResponse is a common type that holds information coming from various
+// jawbone endpoints used.
+type jawboneResponse struct {
+	Data struct {
+		Items []struct {
+			Date    int `json:"date"`
+			Details struct {
+				Caffeine   int    `json:"caffeine"`
+				Steps      int    `json:"steps"`
+				AsleepTime uint64 `json:"asleep_time"`
+				AwakeTime  uint64 `json:"awake_time"`
+			} `json:"details"`
+			RestingHeartrate int `json:"resting_heartrate"`
+		} `json:"items"`
+	} `json:"data"`
+}
+
+func parseJawboneResponse(b []byte) (jawboneResponse, error) {
+	var v jawboneResponse
+	err := json.Unmarshal(b, &v)
+	return v, errors.Wrap(err, "failed to parse jawbone response")
 }
