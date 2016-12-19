@@ -141,6 +141,18 @@
 			"revisionTime": "2016-11-17T03:31:26Z"
 		},
 		{
+			"checksumSHA1": "CjFT0Q0MsmF2aZjnYjCVH+BOppg=",
+			"path": "github.com/google/go-github/github",
+			"revision": "7edde482875504b49769ad097eab7c572547ff21",
+			"revisionTime": "2016-12-02T03:29:50Z"
+		},
+		{
+			"checksumSHA1": "yyAzHoiVLu+xywYI2BDyRq6sOqE=",
+			"path": "github.com/google/go-querystring/query",
+			"revision": "9235644dd9e52eeae6fa48efd539fdc351a0af53",
+			"revisionTime": "2016-03-11T01:20:12Z"
+		},
+		{
 			"checksumSHA1": "V/53BpqgOkSDZCX6snQCAkdO2fM=",
 			"path": "github.com/googleapis/gax-go",
 			"revision": "da06d194a00e19ce00d9011a13931c3f6f6887c7",

@@ -19,7 +19,7 @@ func main() {
 		Tasks struct {
 			Foursquare struct {
 				AccessToken string `toml:"access_token"`
-			} `toml:"Foursquare"`
+			} `toml:"foursquare"`
 		} `toml:"tasks"`
 	}
 
