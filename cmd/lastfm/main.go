@@ -32,6 +32,11 @@ func main() {
 	task.RequireConfig(log, cfg.Tasks.LastFM.APIKey, "api_key")
 	task.RequireConfig(log, cfg.Tasks.LastFM.User, "user")
 
+	store, err := task.GetDatastore()
+	if err != nil {
+		task.LogFatal(log, "error", err)
+	}
+
 	epochToday := now.BeginningOfDay().Unix()
 	url := fmt.Sprintf("http://ws.audioscrobbler.com/2.0?format=json&from=%d&method=user.getrecenttracks&user=%s&api_key=%s&limit=200",
 		epochToday, cfg.Tasks.LastFM.User, cfg.Tasks.LastFM.APIKey)
@@ -55,10 +60,12 @@ func main() {
 	}
 	log.Log("msg", "parsed response", "songs", len(v.RecentTracks.Track))
 
-	metrics.Metric{
+	if err := store.Save(metrics.Metric{
 		Name: "tracks_listened",
 		Kind: metrics.Daily,
-	}.NewMeasurement(time.Now(), float64(len(v.RecentTracks.Track)))
+	}.NewMeasurement(time.Now(), float64(len(v.RecentTracks.Track)))); err != nil {
+		task.LogFatal(log, "error", err)
+	}
 
-	log.Log("msg", "done")
+	log.Log("msg", "saved measurement")
 }
