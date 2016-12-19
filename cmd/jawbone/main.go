@@ -32,6 +32,7 @@ type subcmd func(log *logger.Context, c config, daysBack int, store metrics.Data
 var (
 	subcmds = map[string]subcmd{
 		"sleeps": sleeps,
+		"steps":  steps,
 	}
 )
 
@@ -101,7 +102,7 @@ func sleeps(log *logger.Context, c config, daysBack int, store metrics.Datastore
 		Kind: metrics.Daily}
 
 	for i := 0; i < daysBack; i++ {
-		day := now.New(time.Now()).BeginningOfDay().Add(-time.Hour * 24 * time.Duration(i))
+		day := now.New(time.Now().UTC()).BeginningOfDay().Add(-time.Hour * 24 * time.Duration(i))
 		dayInt, _ := strconv.Atoi(fmt.Sprintf("%d%02d%02d", day.Year(), day.Month(), day.Day()))
 
 		totalMins := 0.0
@@ -118,6 +119,55 @@ func sleeps(log *logger.Context, c config, daysBack int, store metrics.Datastore
 				return errors.Wrap(err, "failed to save measurement")
 			}
 			log.Log("msg", "saved sleep measurement", "day", dayInt, "hours", totalMins/60)
+		}
+	}
+	return nil
+}
+
+func steps(log *logger.Context, c config, daysBack int, store metrics.Datastore) error {
+	resp, err := doRequest("https://jawbone.com/nudge/api/users/@me/moves", c.Tasks.Jawbone.AccessToken)
+	if err != nil {
+		return err
+	}
+
+	var v struct {
+		Data struct {
+			Moves []struct {
+				Date    int `json:"date"`
+				Details struct {
+					Steps int `json:"steps"`
+				} `json:"details"`
+			} `json:"items"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(resp, &v); err != nil {
+		{
+			return errors.Wrap(err, "failed to parse the response")
+		}
+	}
+
+	metric := metrics.Metric{
+		Name: "steps",
+		Kind: metrics.Daily}
+
+	for i := 0; i < daysBack; i++ {
+		day := now.New(time.Now().UTC()).BeginningOfDay().Add(-time.Hour * 24 * time.Duration(i))
+		dayInt, _ := strconv.Atoi(fmt.Sprintf("%d%02d%02d", day.Year(), day.Month(), day.Day()))
+
+		total := 0
+		for _, move := range v.Data.Moves {
+			if move.Date == dayInt {
+				total += move.Details.Steps
+			}
+		}
+
+		if total == 0 {
+			log.Log("msg", "no steps found", "day", dayInt)
+		} else {
+			if err := store.Save(metric.NewMeasurement(day, float64(total))); err != nil {
+				return errors.Wrap(err, "failed to save measurement")
+			}
+			log.Log("msg", "saved step measurement", "day", dayInt, "steps", total)
 		}
 	}
 	return nil
