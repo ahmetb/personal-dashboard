@@ -7,13 +7,37 @@ import (
 
 	"cloud.google.com/go/datastore"
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
+	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics/store"
 	"github.com/pkg/errors"
 	"google.golang.org/api/iterator"
 )
 
-func NewDatastore(project, kind string) (metrics.DataStore, error) {
+// measurement is an internal type
+type measurement struct {
+	Source string    `datastore:"source"`
+	Date   time.Time `datastore:"date"`
+	Value  float64   `datastore:"value,noindex"`
+}
+
+func init() {
+	store.Register("googledatastore", newFromParameters)
+}
+
+func newFromParameters(params map[string]string) (metrics.Datastore, error) {
+	project := params["project"]
+	if project == "" {
+		return nil, errors.New("google: 'project' parameter not specified")
+	}
+	kind := params["kind"]
+	if kind == "" {
+		return nil, errors.New("google: 'kind' parameter not specified")
+	}
+	return newDatastore(project, kind)
+}
+
+func newDatastore(project, kind string) (metrics.Datastore, error) {
 	cl, err := datastore.NewClient(context.Background(), project)
-	return &googleCloudDatastore{cl, kind}, errors.Wrap(err, "cannot initialize cloud datastore client")
+	return &googleCloudDatastore{cl, kind}, errors.Wrap(err, "google: cannot initialize cloud datastore client")
 }
 
 type googleCloudDatastore struct {
@@ -22,7 +46,13 @@ type googleCloudDatastore struct {
 }
 
 func (s *googleCloudDatastore) Save(m metrics.Measurement) error {
-	_, err := s.cl.Put(context.Background(), datastore.NameKey(s.kind, key(m), nil), &m)
+	// convert to datastore-annotated type
+	v := measurement{
+		Source: m.Source,
+		Date:   m.Date,
+		Value:  m.Value,
+	}
+	_, err := s.cl.Put(context.Background(), datastore.NameKey(s.kind, key(v), nil), &v)
 	return errors.Wrap(err, "google: failed to upsert")
 }
 
@@ -49,6 +79,6 @@ func (s *googleCloudDatastore) Load(source string, since time.Time) ([]metrics.M
 }
 
 // key gives a unique key to the measurement to be used in upserts.
-func key(d metrics.Measurement) string {
+func key(d measurement) string {
 	return fmt.Sprintf("%s@%s", d.Source, d.Date.UTC().Format(time.RFC3339))
 }

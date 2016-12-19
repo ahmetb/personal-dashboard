@@ -1,4 +1,4 @@
-package google_test
+package google
 
 import (
 	"os"
@@ -7,16 +7,29 @@ import (
 	"time"
 
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
-	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics/store/google"
 	"github.com/stretchr/testify/require"
 )
 
-func Test_googleCloudDatastore(t *testing.T) {
+func Test_newFromParameters(t *testing.T) {
+	_, err := newFromParameters(nil)
+	require.NotNil(t, err)
+	require.Contains(t, err.Error(), "project")
+
+	_, err = newFromParameters(map[string]string{"project": "x"})
+	require.NotNil(t, err)
+	require.Contains(t, err.Error(), "kind")
+
+	v, err := newFromParameters(map[string]string{"project": "x", "kind": "Y"})
+	require.Nil(t, err)
+	require.NotNil(t, v)
+}
+
+func Test_googleCloudDatastore_save_load(t *testing.T) {
 	project := os.Getenv("DATASTORE_PROJECT_ID")
 	if project == "" {
 		t.Skip("DATASTORE_PROJECT_ID not specified for Google Cloud Datastore tests.")
 	}
-	ds, err := google.NewDatastore(project, "Metrics")
+	ds, err := newDatastore(project, "Metrics")
 	require.Nil(t, err)
 
 	var (

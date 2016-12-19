@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"encoding/json"
 
+	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/task"
 	"github.com/jinzhu/now"
 )
@@ -52,5 +54,11 @@ func main() {
 		task.LogFatal(log, "msg", "failed to decode json response", "error", err)
 	}
 	log.Log("msg", "parsed response", "songs", len(v.RecentTracks.Track))
+
+	metrics.Metric{
+		Name: "tracks_listened",
+		Kind: metrics.Daily,
+	}.NewMeasurement(time.Now(), float64(len(v.RecentTracks.Track)))
+
 	log.Log("msg", "done")
 }
