@@ -104,7 +104,7 @@ func tweets(c config, store metrics.Datastore) {
 	log.Log("tweets_count", count, "day", today)
 	if err := store.Save(metrics.Metric{
 		Kind: metrics.Daily,
-		Name: "twitter.followers",
+		Name: "twitter.tweets",
 	}.NewMeasurement(time.Now(), float64(count))); err != nil {
 		task.LogFatal(log, "error", err)
 	}
