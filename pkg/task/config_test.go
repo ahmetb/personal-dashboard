@@ -3,7 +3,6 @@ package task
 import (
 	"testing"
 
-	"github.com/ahmetalpbalkan/personal-dashboard/pkg/config"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,7 +12,7 @@ func Test_parseTOML(t *testing.T) {
 		Age  int    `toml:"age"`
 	}
 	var v vv
-	err := config.Parse([]byte(`# toml test document
+	err := parseTOML([]byte(`# toml test document
 name="Rob Pike"
 age = 42`), &v)
 	require.Nil(t, err)
@@ -26,7 +25,7 @@ func Test_parseTOML_error(t *testing.T) {
 		Age  int    `toml:"age"`
 	}
 	var v vv
-	err := config.Parse([]byte(`
+	err := parseTOML([]byte(`
 name=Rob Pike
 age = 42`), &v)
 	require.NotNil(t, err)
