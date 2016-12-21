@@ -1,11 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
-
-	"encoding/json"
 
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/task"

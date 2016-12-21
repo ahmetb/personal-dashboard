@@ -1,16 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	"net/http"
-
-	"io/ioutil"
-
-	"encoding/json"
 
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/task"

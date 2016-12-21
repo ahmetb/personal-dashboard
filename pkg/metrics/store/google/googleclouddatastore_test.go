@@ -3,7 +3,6 @@ package google
 import (
 	"os"
 	"testing"
-
 	"time"
 
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
