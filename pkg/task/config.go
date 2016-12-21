@@ -15,6 +15,12 @@ const (
 	configPathEnv     = "PD_CONFIG_PATH"
 )
 
+// parseTOML parses TOML-formatted config data into v.
+func parseTOML(data []byte, v interface{}) error {
+	_, err := toml.Decode(string(data), v)
+	return errors.Wrap(err, "failed to parse config")
+}
+
 // ReadConfig reads the default config file from path (or the environment)
 // variable that overrides it and parses it into v
 func ReadConfig(v interface{}) error {
@@ -22,7 +28,7 @@ func ReadConfig(v interface{}) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to read config file")
 	}
-	return config.Parse(b, v)
+	return ParseTOML(b, v)
 }
 
 // configPath returns the path for the expected config file, allows it to

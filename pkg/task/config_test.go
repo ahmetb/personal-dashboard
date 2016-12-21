@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParseConfig(t *testing.T) {
+func Test_parseTOML(t *testing.T) {
 	type vv struct {
 		Name string `toml:"name"`
 		Age  int    `toml:"age"`
@@ -20,7 +20,7 @@ age = 42`), &v)
 	require.EqualValues(t, vv{"Rob Pike", 42}, v)
 }
 
-func TestParseConfig_error(t *testing.T) {
+func Test_parseTOML_error(t *testing.T) {
 	type vv struct {
 		Name string `toml:"name"`
 		Age  int    `toml:"age"`
