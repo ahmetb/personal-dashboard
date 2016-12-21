@@ -6,9 +6,12 @@ import (
 	"github.com/go-kit/kit/log"
 )
 
-func LoggerWithTask(name string) *log.Context {
+func LoggerWithTask(name, version string) *log.Context {
+	if version == "" {
+		version = "N/A"
+	}
 	return log.NewContext(log.NewSyncLogger(log.NewLogfmtLogger(os.Stdout))).
-		With("task", name, "time", log.DefaultTimestampUTC)
+		With("task", name, "git", version, "time", log.DefaultTimestampUTC)
 }
 
 func LogFatal(logger *log.Context, keyvals ...interface{}) {

@@ -13,6 +13,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var GitSummary string // provided by govvv
+
 func main() {
 	var cfg struct {
 		Tasks struct {
@@ -22,7 +24,7 @@ func main() {
 		} `toml:"tasks"`
 	}
 
-	log := task.LoggerWithTask("foursquare")
+	log := task.LoggerWithTask("foursquare", GitSummary)
 	log.Log("msg", "starting")
 
 	if err := task.ReadConfig(&cfg); err != nil {

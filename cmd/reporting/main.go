@@ -29,8 +29,10 @@ type metric struct {
 	aggregatorFuncs []aggregateFunc
 }
 
+var GitSummary string // provided by govvv
+
 func main() {
-	log := task.LoggerWithTask("reporting")
+	log := task.LoggerWithTask("reporting", GitSummary)
 
 	store, err := task.GetDatastore()
 	if err != nil {

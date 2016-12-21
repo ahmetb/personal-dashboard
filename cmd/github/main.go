@@ -22,6 +22,9 @@ var (
 		"PullRequestReviewEvent",
 		"PullRequestReviewCommentEvent",
 		"PushEvent"}
+
+	// GitSummary is provided by govvv
+	GitSummary string
 )
 
 func main() {
@@ -35,7 +38,7 @@ func main() {
 		} `toml:"tasks"`
 	}
 
-	log := task.LoggerWithTask("github")
+	log := task.LoggerWithTask("github", GitSummary)
 	if err := task.ReadConfig(&cfg); err != nil {
 		task.LogFatal(log, "error", err)
 	}

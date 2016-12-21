@@ -12,6 +12,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var GitSummary string // provided by govvv
+
 func main() {
 	var cfg struct {
 		Tasks struct {
@@ -22,7 +24,7 @@ func main() {
 		} `toml:"tasks"`
 	}
 
-	log := task.LoggerWithTask("wakatime")
+	log := task.LoggerWithTask("wakatime", GitSummary)
 	if err := task.ReadConfig(&cfg); err != nil {
 		task.LogFatal(log, "error", err)
 	}

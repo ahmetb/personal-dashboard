@@ -11,6 +11,8 @@ import (
 	"github.com/jinzhu/now"
 )
 
+var GitSummary string // provided by govvv
+
 func main() {
 	var cfg struct {
 		Tasks struct {
@@ -20,7 +22,7 @@ func main() {
 			} `toml:"lastfm"`
 		} `toml:"tasks"`
 	}
-	log := task.LoggerWithTask("lastfm")
+	log := task.LoggerWithTask("lastfm", GitSummary)
 	log.Log("msg", "starting")
 
 	if err := task.ReadConfig(&cfg); err != nil {

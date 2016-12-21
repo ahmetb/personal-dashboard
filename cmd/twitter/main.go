@@ -12,6 +12,8 @@ import (
 	"github.com/jinzhu/now"
 )
 
+var GitSummary string // provided by govvv
+
 type config struct {
 	Tasks struct {
 		Twitter struct {
@@ -26,7 +28,7 @@ type config struct {
 }
 
 var (
-	log = task.LoggerWithTask("lastfm")
+	log = task.LoggerWithTask("lastfm", GitSummary)
 )
 
 func main() {

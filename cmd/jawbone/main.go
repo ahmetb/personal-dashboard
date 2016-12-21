@@ -16,6 +16,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var GitSummary string // provided by govvv
+
 type config struct {
 	Tasks struct {
 		Jawbone struct {
@@ -37,7 +39,7 @@ var (
 func main() {
 	var cfg config
 
-	log := task.LoggerWithTask("jawbone")
+	log := task.LoggerWithTask("jawbone", GitSummary)
 	log.Log("msg", "starting")
 
 	if err := task.ReadConfig(&cfg); err != nil {
