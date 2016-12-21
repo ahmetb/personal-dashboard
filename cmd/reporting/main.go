@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/ahmetalpbalkan/personal-dashboard/pkg/metrics"
@@ -12,16 +14,19 @@ import (
 type config struct {
 	Tasks struct {
 		Reporting struct {
-			Metrics []struct {
-				Source      string   `toml:"source"`
-				Output      string   `toml:"output"`
-				DaysBack    int      `toml:"days_back"`
-				Aggregators []string `toml:"aggregators"`
-
-				aggregatorFuncs []aggregateFunc
-			} `toml:"metric"`
+			Metrics  []metric `toml:"metric"`
+			Uploader map[string]map[string]string
 		} `toml:"reporting"`
 	} `toml:"tasks"`
+}
+
+type metric struct {
+	Source      string   `toml:"source"`
+	Output      string   `toml:"output"`
+	DaysBack    int      `toml:"days_back"`
+	Aggregators []string `toml:"aggregators"`
+
+	aggregatorFuncs []aggregateFunc
 }
 
 func main() {
@@ -32,12 +37,12 @@ func main() {
 		task.LogFatal(log, "error", err)
 	}
 
-	c, err := parseConfig()
+	metrics, uploader, err := parseConfig()
 	if err != nil {
 		task.LogFatal(log, "error", err)
 	}
 
-	metrics := c.Tasks.Reporting.Metrics
+	out := make(map[string][]record)
 	log.Log("msg", "loaded configuration", "metrics", len(metrics))
 	for _, m := range metrics {
 		log.Log("msg", "collecting metric", "source", m.Source, "output", m.Output, "days_back", m.DaysBack, "aggregators", len(m.aggregatorFuncs))
@@ -46,11 +51,33 @@ func main() {
 			task.LogFatal(log, "error", err)
 		}
 		rs = process(rs, m.aggregatorFuncs)
-
-		for _, v := range rs {
-			log.Log("key", v.Date, "data", v.Value, "fake", v.Interpolated)
-		}
+		out[m.Output] = rs
 	}
+
+	file, err := toPJSON(out)
+	if err != nil {
+		task.LogFatal(log, "error", err)
+	}
+
+	if err := uploader.save(file); err != nil {
+		task.LogFatal(log, "msg", "failed to upload report", "error", err)
+	}
+	log.Log("msg", "uploaded report")
+}
+
+// toPJSON encapsulates data in a javascript function.
+func toPJSON(data map[string][]record) ([]byte, error) {
+	type doc struct {
+		Generated time.Time           `json:"generated"`
+		Data      map[string][]record `json:"data"`
+	}
+	v := doc{Generated: time.Now().UTC(),
+		Data: data}
+	b, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to convert to json")
+	}
+	return []byte(fmt.Sprintf(`renderData(%s)`, string(b))), nil
 }
 
 func readData(store metrics.Datastore, source string, daysBack int) ([]record, error) {
@@ -73,33 +100,53 @@ func process(in []record, funcs []aggregateFunc) []record {
 	return in
 }
 
-func parseConfig() (*config, error) {
+func parseConfig() ([]metric, uploader, error) {
 	var c config
 	if err := task.ReadConfig(&c); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
+	// parse metrics
 	if len(c.Tasks.Reporting.Metrics) == 0 {
-		return nil, errors.New("no metrics specified for reporting")
+		return nil, nil, errors.New("no metrics specified for reporting")
 	}
 	for i, m := range c.Tasks.Reporting.Metrics {
 		if m.Source == "" {
-			return nil, errors.Errorf("source not specified for metric #%d", i)
+			return nil, nil, errors.Errorf("source not specified for metric #%d", i)
 		}
 		if m.Output == "" {
-			return nil, errors.Errorf("output not specified for metric %s", m.Source)
+			return nil, nil, errors.Errorf("output not specified for metric %s", m.Source)
 		}
 		if m.DaysBack <= 0 {
-			return nil, errors.Errorf("days_back not specified or invalid for metric '%s'", m.Source)
+			return nil, nil, errors.Errorf("days_back not specified or invalid for metric '%s'", m.Source)
 		}
 
 		for _, v := range m.Aggregators {
 			f, ok := aggregators[v]
 			if !ok {
-				return nil, errors.Errorf("unknown aggregator func '%s' for metric '%s'", v, m.Source)
+				return nil, nil, errors.Errorf("unknown aggregator func '%s' for metric '%s'", v, m.Source)
 			}
 			c.Tasks.Reporting.Metrics[i].aggregatorFuncs = append(c.Tasks.Reporting.Metrics[i].aggregatorFuncs, f)
 		}
 	}
-	return &c, nil
+
+	// parse uploader
+	uploaders := c.Tasks.Reporting.Uploader
+	if len(uploaders) != 1 {
+		return nil, nil, errors.Errorf("expected only 1 uploader; got %d", len(uploaders))
+	}
+	var uploaderName string
+	for k := range uploaders {
+		uploaderName = k
+	}
+	uf, ok := uploadDrivers[uploaderName]
+	if !ok {
+		return nil, nil, errors.Errorf("unknown upload driver '%s'", uploaderName)
+	}
+	u, err := uf(uploaders[uploaderName])
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to initialize uploader")
+	}
+
+	return c.Tasks.Reporting.Metrics, u, nil
 }
