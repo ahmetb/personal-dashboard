@@ -23,7 +23,7 @@ func main() {
 		} `toml:"tasks"`
 	}
 
-	log := task.LoggerWithTask("github")
+	log := task.LoggerWithTask("wakatime")
 	if err := task.ReadConfig(&cfg); err != nil {
 		task.LogFatal(log, "error", err)
 	}
@@ -43,6 +43,7 @@ func main() {
 	now := time.Now().In(loc)
 	today := fmt.Sprintf("%d-%02d-%02d", now.Year(), now.Month(), now.Day())
 
+	log.Log("msg", "retrieving activities", "day", today, "tz", cfg.Tasks.WakaTime.Timezone)
 	v, err := getActivities(cfg.Tasks.WakaTime.APIKey, today)
 	if err != nil {
 		task.LogFatal(log, "error", err)
