@@ -64,8 +64,11 @@ func main() {
 
 		for _, event := range events {
 			if now.New(event.CreatedAt.UTC()).BeginningOfDay().Equal(today) {
-				log.Log("event", event.ID, "date", event.CreatedAt, "type", event.Type)
-				activities++
+				isContrib := isContribEvent(*event.Type)
+				log.Log("event", event.ID, "date", event.CreatedAt, "type", event.Type, "is_contrib", isContrib)
+				if isContrib {
+					activities++
+				}
 			} else {
 				done = true
 				break
