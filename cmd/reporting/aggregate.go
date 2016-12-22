@@ -5,7 +5,7 @@ import "time"
 type record struct {
 	Date         time.Time `json:"key"`
 	Value        float64   `json:"data"`
-	Interpolated bool      `json:"fake"`
+	Interpolated bool      `json:"fake,omitempty"`
 }
 
 type aggregateFunc func([]record) []record
