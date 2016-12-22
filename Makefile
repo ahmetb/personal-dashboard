@@ -18,4 +18,4 @@ ifndef GOPATH
 endif
 
 docker-image: binaries
-	docker build -t personal-dashboard . 
+	docker build -t ahmet/personal-dashboard .
