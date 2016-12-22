@@ -1,7 +1,7 @@
 all: binaries
 
 binaries: check-env clean
-	set -euo pipefail; set -x; \
+	set -eu; set -x; \
 	cmds=$$(go list ./cmd/...); \
 	for d in $$cmds; do \
 		GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \

@@ -8,6 +8,10 @@ and see a demo on [my home page](https://ahmetalpbalkan.com/):
 ![](https://ahmetalpbalkan.com/blog/static/images/2013/07/music.png)
 ![](https://ahmetalpbalkan.com/blog/static/images/2013/07/twitter.png)
 
+[![Build Status](https://travis-ci.org/ahmetalpbalkan/personal-dashboard.svg?branch=master)](https://travis-ci.org/ahmetalpbalkan/personal-dashboard)
+
+------
+
 Currently collected metrics:
 
 - `github` contribution activities
