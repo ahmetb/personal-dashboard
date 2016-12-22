@@ -18,17 +18,14 @@ func Test_newFromParameters(t *testing.T) {
 	require.NotNil(t, err)
 	require.Contains(t, err.Error(), "kind")
 
-	v, err := newFromParameters(map[string]string{"project": "x", "kind": "Y"})
+	proj := googleProjectID(t)
+	v, err := newFromParameters(map[string]string{"project": proj, "kind": "Y"})
 	require.Nil(t, err)
 	require.NotNil(t, v)
 }
 
 func Test_googleCloudDatastore_save_load(t *testing.T) {
-	project := os.Getenv("DATASTORE_PROJECT_ID")
-	if project == "" {
-		t.Skip("DATASTORE_PROJECT_ID not specified for Google Cloud Datastore tests.")
-	}
-	ds, err := newDatastore(project, "Metrics")
+	ds, err := newDatastore(googleProjectID(t), "Metrics")
 	require.Nil(t, err)
 
 	var (
@@ -60,4 +57,12 @@ func Test_googleCloudDatastore_save_load(t *testing.T) {
 	res2, err := ds.Load("test", time.Date(2015, 1, 1, 0, 0, 0, 0, time.UTC))
 	require.Nil(t, err)
 	require.EqualValues(t, []metrics.Measurement{m1, m3, m2}, res2)
+}
+
+func googleProjectID(t *testing.T) string {
+	project := os.Getenv("DATASTORE_PROJECT_ID")
+	if project == "" {
+		t.Skip("DATASTORE_PROJECT_ID not specified for Google Cloud Datastore tests.")
+	}
+	return project
 }
