@@ -1,0 +1,91 @@
+[datastore]
+  [datastore.googledatastore]
+  project="<project-name>"
+  kind="Metrics"
+
+[tasks]
+  # [tasks.lastfm]
+  # api_key = "<value>"
+  # user = "<value>"
+
+  # [tasks.twitter]
+  # consumer_key = "<value>"
+  # consumer_secret = "<value>"
+  # access_token = "<value>"
+  # access_token_secret = "<value>"
+  # exclude_replies=true
+  # exclude_retweets=true
+
+  # [tasks.foursquare]
+  # access_token = "<value>"
+  
+  # [tasks.jawbone]
+  # access_token = "<value>"
+
+  # [tasks.github]
+  # username = "<value>"
+  # access_token = "<value>"
+  # public_only = false
+
+  # [tasks.wakatime]
+  # api_key = "<value>"
+  # timezone = "America/Los_Angeles"
+
+  # [tasks.reporting]
+    # [tasks.reporting.uploader.google]
+    # bucket="<value>"
+    # object="data.js"
+
+    # [[tasks.reporting.metric]]
+    # source="github.activities"
+    # output="github.activities"
+    # days_back=30
+    # aggregators = ["zero_fill_days"]
+
+    # [[tasks.reporting.metric]]
+    # source="sleeps"
+    # output="sleeps"
+    # days_back=14
+    # aggregators = ["zero_fill_days", "linear_interpolation"]
+
+    # [[tasks.reporting.metric]]
+    # source="steps"
+    # output="steps"
+    # days_back=14
+    # aggregators = ["zero_fill_days", "linear_interpolation"]
+
+    # [[tasks.reporting.metric]]
+    # source="caffeine_intake"
+    # output="caffeine_intake"
+    # days_back=14
+    # aggregators = ["zero_fill_days"]
+
+    # [[tasks.reporting.metric]]
+    # source="resting_heartrate"
+    # output="resting_heartrate"
+    # days_back=14
+    # aggregators = ["zero_fill_days", "linear_interpolation"]
+
+    # [[tasks.reporting.metric]]
+    # source="lastfm.tracks_listened"
+    # output="tracks_listened"
+    # days_back=21
+    # aggregators = ["zero_fill_days"]
+
+    # [[tasks.reporting.metric]]
+    # source="twitter.followers"
+    # output="twitter.followers"
+    # days_back=21
+    # aggregators = ["zero_fill_days", "linear_interpolation"]
+
+    # [[tasks.reporting.metric]]
+    # source="twitter.tweets"
+    # output="twitter.tweets"
+    # days_back=21
+    # aggregators = ["zero_fill_days"]
+
+    # [[tasks.reporting.metric]]
+    # source="coding"
+    # output="coding"
+    # days_back=21
+    # aggregators = ["zero_fill_days"]

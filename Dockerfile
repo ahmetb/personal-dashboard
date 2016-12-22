@@ -1,13 +1,9 @@
-FROM python:2.7
+FROM alpine:latest
 MAINTAINER Ahmet Alp Balkan
 
-RUN mkdir /app
-WORKDIR /app
-COPY requirements.txt /app/
-RUN pip install -r requirements.txt
+RUN apk --update upgrade && \
+    apk add ca-certificates && \
+    update-ca-certificates && \
+    rm -rf /var/cache/apk/*
 
-# Add simplegauges dependency
-RUN git clone https://github.com/ahmetalpbalkan/simplegauges.git
-
-COPY . /app/
-ENTRYPOINT ["./taskhost.py"]
+COPY ./bin /bin
