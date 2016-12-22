@@ -17,5 +17,5 @@ ifndef GOPATH
 	$(error GOPATH is unset)
 endif
 
-docker-image:
+docker-image: binaries
 	docker build -t personal-dashboard . 
