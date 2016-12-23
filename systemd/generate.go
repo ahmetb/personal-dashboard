@@ -62,8 +62,10 @@ WantedBy=timers.target
 	}
 	cmd := []string{
 		"scp ./*.{timer,service} SERVER:/etc/systemd/system",
-		"systemctl enable /etc/systemd/system/pd-*.timer",
-		"systemctl start /etc/systemd/system/pd-*.timer",
+		"# ssh SERVER",
+		"cd /etc/systemd/system",
+		"systemctl enable pd-*.timer",
+		"systemctl start pd-*.timer",
 		"systemctl list-timers --all | grep pd-"}
 
 	fmt.Println(strings.Join(cmd, "\n"))

@@ -18,6 +18,7 @@ Currently collected metrics:
 - `wakatime` coding time
 - `lastfm` listened tracks
 - `jawboneup` steps, sleeps, resting heartrate
+- `strava` activities, daily exercise duration
 - `foursquare` checkins
 - `twitter` followers, tweets
 
