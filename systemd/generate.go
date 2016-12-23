@@ -26,6 +26,7 @@ var fixture = []task{
 	{"strava", "*:59:00", "strava"},
 	{"lastfm", "*:0/20", "lastfm"},
 	{"wakatime", "*:0/20", "wakatime"},
+	{"foursquare", "*:59:00", "foursquare"},
 }
 
 func main() {

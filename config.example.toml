@@ -90,6 +90,12 @@
     # aggregators = ["zero_fill_days"]
 
     # [[tasks.reporting.metric]]
+    # source="foursquare.checkins"
+    # output="checkins"
+    # days_back=30
+    # aggregators = ["zero_fill_days"]
+
+    # [[tasks.reporting.metric]]
     # source="coding"
     # output="coding"
     # days_back=21
