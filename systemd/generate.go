@@ -19,9 +19,10 @@ var fixture = []task{
 	{"twitter-followers", "*:59:00", "twitter followers"},
 	{"twitter-tweets", "*:59:00", "twitter tweets"},
 	{"github", "*:59:00", "github"},
-	{"jawbone-sleeps", "*:0/15", "jawbone sleeps 3"},
-	{"jawbone-steps", "*:0/15", "jawbone steps 3"},
-	{"jawbone-caffeine", "*:0/15", "jawbone caffeine 3"},
+	{"jawbone-sleeps", "*:0/15", "jawbone sleeps"},
+	{"jawbone-steps", "*:0/15", "jawbone steps"},
+	{"jawbone-caffeine", "*:0/15", "jawbone caffeine"},
+	{"strava", "*:59:00", "strava"},
 	{"lastfm", "*:0/20", "lastfm"},
 	{"wakatime", "*:0/20", "wakatime"},
 }

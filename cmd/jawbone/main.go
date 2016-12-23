@@ -22,6 +22,7 @@ type config struct {
 	Tasks struct {
 		Jawbone struct {
 			AccessToken string `toml:"access_token"`
+			DaysBack    int    `toml:"days_back"`
 		} `toml:"jawbone"`
 	} `toml:"tasks"`
 }
@@ -34,6 +35,7 @@ var (
 		"steps":     steps,
 		"caffeine":  caffeine,
 		"heartrate": restingHeartrate}
+	defaultDaysBack = 3
 )
 
 func main() {
@@ -45,33 +47,35 @@ func main() {
 	if err := task.ReadConfig(&cfg); err != nil {
 		task.LogFatal(log, "error", err)
 	}
+	task.RequireConfig(log, cfg.Tasks.Jawbone.AccessToken, "access_token")
 
 	store, err := task.GetDatastore()
 	if err != nil {
 		task.LogFatal(log, "error", err)
 	}
 
-	if len(os.Args) < 3 {
-		task.LogFatal(log, "msg", "insufficient arguments", "usage", fmt.Sprintf("%s <COMMAND> <DAYS_BACK>", os.Args[0]))
-	} else if len(os.Args) > 3 {
+	if len(os.Args) < 2 {
+		task.LogFatal(log, "msg", "insufficient arguments", "usage", fmt.Sprintf("%s <COMMAND>", os.Args[0]))
+	} else if len(os.Args) > 2 {
 		task.LogFatal(log, "msg", "too many arguments")
 	}
 	cmdS := os.Args[1]
-	daysBackS := os.Args[2]
 
 	cmd, ok := subcmds[cmdS]
 	if !ok {
 		task.LogFatal(log, "msg", "unknown subcommand", "cmd", cmdS)
 	}
 
-	daysBack, err := strconv.Atoi(daysBackS)
-	if err != nil {
-		task.LogFatal(log, "msg", "failed to parse integer", "val", daysBackS, "error", err)
+	daysBack := cfg.Tasks.Jawbone.DaysBack
+	if daysBack == 0 {
+		daysBack = defaultDaysBack
 	}
+	log.Log("msg", "starting", "days_back", daysBack)
 
 	if err := cmd(log.With("cmd", cmdS), cfg, daysBack, store); err != nil {
-
+		task.LogFatal(log, "error", err)
 	}
+	log.Log("msg", "done")
 }
 
 func sleeps(log *logger.Context, c config, daysBack int, store metrics.Datastore) error {

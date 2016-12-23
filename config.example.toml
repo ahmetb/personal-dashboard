@@ -22,6 +22,11 @@
   # [tasks.jawbone]
   # access_token = "<value>"
 
+  # [tasks.strava]
+  # access_token = "<value>"
+  # days_back = 3
+  # timezone = "America/Los_Angeles"
+
   # [tasks.github]
   # username = "<value>"
   # access_token = "<value>"
