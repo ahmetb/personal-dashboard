@@ -39,7 +39,7 @@ Description=Scheduled personal dashboard task for '%s'
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/docker run --rm -v /home/core/personal-dashboard/config.toml:/etc/personal-dashboard/config.toml -v /home/core/personal-dashboard/google-credentials.json:/etc/personal-dashboard/google-credentials.json  -e GOOGLE_APPLICATION_CREDENTIALS=/etc/personal-dashboard/google-credentials.json ahmet/personal-dashboard %s
+ExecStart=/usr/bin/timeout 30 /usr/bin/docker run --rm -v /home/core/personal-dashboard/config.toml:/etc/personal-dashboard/config.toml -v /home/core/personal-dashboard/google-credentials.json:/etc/personal-dashboard/google-credentials.json  -e GOOGLE_APPLICATION_CREDENTIALS=/etc/personal-dashboard/google-credentials.json ahmet/personal-dashboard %s
 `, svc.name, svc.cmd))
 
 		if err := ioutil.WriteFile(serviceFn, serviceB, 0644); err != nil {

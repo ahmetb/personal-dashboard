@@ -28,7 +28,7 @@ type config struct {
 }
 
 var (
-	log = task.LoggerWithTask("lastfm", GitSummary)
+	log = task.LoggerWithTask("twitter", GitSummary)
 )
 
 func main() {
