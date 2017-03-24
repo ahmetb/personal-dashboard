@@ -8,7 +8,7 @@ and see a demo on [my home page](https://ahmetalpbalkan.com/):
 ![](https://ahmetalpbalkan.com/blog/images/2013/07/music.png)
 ![](https://ahmetalpbalkan.com/blog/images/2013/07/twitter.png)
 
-[![Build Status](https://travis-ci.org/ahmetalpbalkan/personal-dashboard.svg?branch=master)](https://travis-ci.org/ahmetalpbalkan/personal-dashboard)
+[![Build Status](https://travis-ci.org/ahmetb/personal-dashboard.svg?branch=master)](https://travis-ci.org/ahmetalpbalkan/personal-dashboard)
 
 ------
 
