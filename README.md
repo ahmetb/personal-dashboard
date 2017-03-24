@@ -4,9 +4,9 @@ This piece of software is collecting data about me all the time and aggregating 
 You can [read about it more on my blog](http://ahmetalpbalkan.com/blog/personal-dashboard/)
 and see a demo on [my home page](https://ahmetalpbalkan.com/):
 
-![](https://ahmetalpbalkan.com/blog/static/images/2013/07/bedroom.png)
-![](https://ahmetalpbalkan.com/blog/static/images/2013/07/music.png)
-![](https://ahmetalpbalkan.com/blog/static/images/2013/07/twitter.png)
+![](https://ahmetalpbalkan.com/blog/images/2013/07/bedroom.png)
+![](https://ahmetalpbalkan.com/blog/images/2013/07/music.png)
+![](https://ahmetalpbalkan.com/blog/images/2013/07/twitter.png)
 
 [![Build Status](https://travis-ci.org/ahmetalpbalkan/personal-dashboard.svg?branch=master)](https://travis-ci.org/ahmetalpbalkan/personal-dashboard)
 
